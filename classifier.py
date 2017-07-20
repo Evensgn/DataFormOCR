@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import pickle
+import cv2
 
 ## disable tensorflow warning output
 import os
@@ -71,8 +72,11 @@ init = tf.global_variables_initializer()
 
 prediction = tf.argmax(y, 1)
 
+saver = tf.train.Saver()
+
 sess = tf.Session()
 sess.run(init)
+saver.restore(sess, 'clf.ckpt')
 print('Classifier initialization.')
 
 def load_clf(clf_filename):
@@ -89,7 +93,15 @@ def load_clf(clf_filename):
 def classify(img_digits):
 	images = []
 	for img_digit in img_digits:
-		
+		# cv2.imshow('processed img', img_digit)
+		# cv2.waitKey()
+		bdr_len0 = int(img_digit.shape[0] * 0.2)
+		bdr_len1 = int((img_digit.shape[0] + bdr_len0 * 2 - img_digit.shape[1]) / 2)
+		img_digit = cv2.copyMakeBorder(img_digit, bdr_len0, bdr_len0, bdr_len1, bdr_len1, cv2.BORDER_CONSTANT, value = 0)
+		# cv2.imshow('processed img', img_digit)
+		# cv2.waitKey()
+		img_digit.resize(NUM_ROW, NUM_COLUMN)
+		images.append(img_digit)
 	images = np.array(images)
 	images.resize(images.size // num_pixel, num_pixel)
 	images = images / GRAY_SCALE_RANGE

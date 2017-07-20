@@ -55,7 +55,7 @@ DENSE_L = [7 * 7 * 64, 1024, 10]
 DENSE_LAYERS = len(DENSE_L) - 1
 
 learning_rate = 5e-4
-iterations = 30000
+iterations = 500 # 30000
 batch_size = 50
 regular_lambda = 1e-6
 drop_keep_prob = 0.5
@@ -106,6 +106,8 @@ cost_function = cross_entropy + regular_lambda * l2_loss
 train_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost_function)
 init = tf.global_variables_initializer()
 
+saver = tf.train.Saver()
+
 print('Start training ...')
 print('Neural Network Convolutional Layers:', CONV_L)
 print('Neural Network Densely Connected Layers:', DENSE_L)
@@ -152,11 +154,12 @@ def dump_clf(clf_filename):
     print('Dumping classifier parameters from file \'' + clf_filename + '\' ...')
     with open(clf_filename, 'wb') as f:
         for i in range(CONV_LAYERS):
-            pickle.load(conv_W[i + 1])
-            pickle.load(conv_b[i + 1])
+            pickle.dump(conv_W[i + 1], f)
+            pickle.dump(conv_b[i + 1], f)
         for i in range(DENSE_LAYERS):
-            pickle.dump(dense_W[i + 1])
-            pickle.dump(dense_b[i + 1])
+            pickle.dump(dense_W[i + 1], f)
+            pickle.dump(dense_b[i + 1], f)
     print('Dumping complete.')
 
-dump_clf('clf.pkl')
+
+saver.save(sess, 'clf.ckpt')

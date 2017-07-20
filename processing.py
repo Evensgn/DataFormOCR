@@ -25,15 +25,12 @@ for rect in rects:
 	img_digit = img_thresh[rect[1] : rect[1] + rect[3], rect[0] : rect[0] + rect[2]]
 	img_digits.append(img_digit)
 
-	# print(img_digit)
-	# cv2.imshow('img_digit', img_digit)
-	# cv2.waitKey(0)
-	# img_digit = cv2.copyMakeBorder(img_digit, bdr_len, bdr_len, bdr_len, bdr_len, cv2.BORDER_CONSTANT, value = 255)
-
 import classifier
 
-classifier.load_clf('clf.pkl')
 digits = classifier.classify(img_digits)
+print(digits)
 
+for i in range(len(digits)):
+	cv2.putText(img, str(digits[i]), (rects[i][0], rects[i][1]), cv2.FONT_HERSHEY_DUPLEX, 2, (0, 255, 255), 3)
 cv2.imshow('processed img', img)
 cv2.waitKey(0)
