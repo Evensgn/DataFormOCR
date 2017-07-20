@@ -19,8 +19,21 @@ rects = [cv2.boundingRect(ctr) for ctr in ctrs]
 cv2.imshow('img_thresh', img_thresh)
 cv2.waitKey(0)
 
+img_digits = []
 for rect in rects:
 	cv2.rectangle(img, (rect[0], rect[1]), (rect[0] + rect[2], rect[1] + rect[3]), (255, 0, 255), 3)
+	img_digit = img_thresh[rect[1] : rect[1] + rect[3], rect[0] : rect[0] + rect[2]]
+	img_digits.append(img_digit)
+
+	# print(img_digit)
+	# cv2.imshow('img_digit', img_digit)
+	# cv2.waitKey(0)
+	# img_digit = cv2.copyMakeBorder(img_digit, bdr_len, bdr_len, bdr_len, bdr_len, cv2.BORDER_CONSTANT, value = 255)
+
+import classifier
+
+classifier.load_clf('clf.pkl')
+digits = classifier.classify(img_digits)
 
 cv2.imshow('processed img', img)
 cv2.waitKey(0)
