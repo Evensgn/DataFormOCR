@@ -5,7 +5,7 @@ GRAY_SCALE_RANGE = 255
 NUM_ROW = 28
 NUM_COLUMN = 28
 
-img = cv2.imread("photo.jpg")
+img = cv2.imread("photo3.jpg")
 # cv2.imshow('img', img)
 # cv2.waitKey(0)
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -47,7 +47,7 @@ for img_digit in img_digits:
 	bdr_len0 = int((square_len - img_digit.shape[0]) / 2)
 	bdr_len1 = int((square_len - img_digit.shape[1]) / 2)
 	img_digit = cv2.copyMakeBorder(img_digit, bdr_len0, bdr_len0, bdr_len1, bdr_len1, cv2.BORDER_CONSTANT, value = 0)
-	if np.mean(img_digit) > 145:
+	if np.mean(img_digit) > 130:
 		is_decimal_point.append(True)
 	else:
 		is_decimal_point.append(False)
