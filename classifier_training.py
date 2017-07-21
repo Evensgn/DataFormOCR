@@ -34,13 +34,13 @@ for i in range(10):
 train_images = train_images / GRAY_SCALE_RANGE
 test_images = test_images / GRAY_SCALE_RANGE
 
-def weight_variable(shape):
+def weight_variable(shape, name_):
     initial = tf.truncated_normal(shape, stddev = 0.1)
-    return tf.Variable(initial)
+    return tf.Variable(initial, name = name_)
 
-def bias_variable(shape):
+def bias_variable(shape, name_):
     initial = tf.constant(0.1, shape = shape)
-    return tf.Variable(initial)
+    return tf.Variable(initial, name = name_)
 
 def conv2d(x, W):
     return tf.nn.conv2d(x, W, strides = [1, 1, 1, 1], padding = 'SAME')
@@ -55,7 +55,7 @@ DENSE_L = [7 * 7 * 64, 1024, 10]
 DENSE_LAYERS = len(DENSE_L) - 1
 
 learning_rate = 5e-4
-iterations = 500 # 30000
+iterations = 30000
 batch_size = 50
 regular_lambda = 1e-6
 drop_keep_prob = 0.5
@@ -67,8 +67,8 @@ y_ = tf.placeholder("float", [None, 10])
 conv_W = list(range(CONV_LAYERS + 1))
 conv_b = list(range(CONV_LAYERS + 1))
 for i in range(CONV_LAYERS):
-    conv_W[i + 1] = weight_variable([5, 5, CONV_L[i], CONV_L[i + 1]])
-    conv_b[i + 1] = bias_variable([CONV_L[i + 1]])
+    conv_W[i + 1] = weight_variable([5, 5, CONV_L[i], CONV_L[i + 1]], 'conv_W' + str(i + 1))
+    conv_b[i + 1] = bias_variable([CONV_L[i + 1]], 'conv_b' + str(i + 1))
 
 conv_yt = list(range(CONV_LAYERS + 1))
 conv_yt_pool = list(range(CONV_LAYERS + 1))
@@ -80,8 +80,8 @@ for i in range(CONV_LAYERS):
 dense_W = list(range(DENSE_LAYERS + 1))
 dense_b = list(range(DENSE_LAYERS + 1))
 for i in range(DENSE_LAYERS):
-    dense_W[i + 1] = weight_variable([DENSE_L[i], DENSE_L[i + 1]])
-    dense_b[i + 1] = bias_variable([DENSE_L[i + 1]])
+    dense_W[i + 1] = weight_variable([DENSE_L[i], DENSE_L[i + 1]], 'dense_W' + str(i + 1))
+    dense_b[i + 1] = bias_variable([DENSE_L[i + 1]], 'dense_b' + str(i + 1))
 
 dense_yt = list(range(DENSE_LAYERS + 1))
 dense_yt[0] = tf.reshape(conv_yt_pool[CONV_LAYERS], [-1, DENSE_L[0]])
@@ -150,16 +150,4 @@ else:
 
 print('Accuracy:', test_accuracy())
 
-def dump_clf(clf_filename):
-    print('Dumping classifier parameters from file \'' + clf_filename + '\' ...')
-    with open(clf_filename, 'wb') as f:
-        for i in range(CONV_LAYERS):
-            pickle.dump(conv_W[i + 1], f)
-            pickle.dump(conv_b[i + 1], f)
-        for i in range(DENSE_LAYERS):
-            pickle.dump(dense_W[i + 1], f)
-            pickle.dump(dense_b[i + 1], f)
-    print('Dumping complete.')
-
-
-saver.save(sess, 'clf.ckpt')
+saver.save(sess, './clf.ckpt')
