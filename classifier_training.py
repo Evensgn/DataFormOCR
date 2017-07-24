@@ -96,9 +96,9 @@ y = tf.nn.softmax(dense_yt[DENSE_LAYERS])
 
 l2_loss = 0
 for i in range(CONV_LAYERS):
-    l2_loss += tf.nn.l2_loss(conv_W[i + 1]) + tf.nn.l2_loss(conv_b[i + 1])
+    l2_loss += tf.nn.l2_loss(conv_W[i + 1])
 for i in range(DENSE_LAYERS):
-    l2_loss += tf.nn.l2_loss(dense_W[i + 1]) + tf.nn.l2_loss(dense_b[i + 1])
+    l2_loss += tf.nn.l2_loss(dense_W[i + 1])
 
 cross_entropy = -tf.reduce_sum(y_ * tf.log(y))
 cost_function = cross_entropy + regular_lambda * l2_loss

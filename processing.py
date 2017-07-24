@@ -5,10 +5,11 @@ GRAY_SCALE_RANGE = 255
 NUM_ROW = 28
 NUM_COLUMN = 28
 
-img = cv2.imread("photo3.jpg")
+img = cv2.imread("photo2.jpg")
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 img_gray = cv2.GaussianBlur(img_gray, (5, 5), 0)
 ret, img_thresh = cv2.threshold(img_gray, 100, 255, cv2.THRESH_BINARY_INV)
+
 im2, ctrs, hier = cv2.findContours(img_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 rects = [cv2.boundingRect(ctr) for ctr in ctrs]
 
